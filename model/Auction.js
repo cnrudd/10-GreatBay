@@ -33,6 +33,7 @@ class Auction {
     );
 
     const targetItem = items.find((it) => it.item_name == item.answer);
+
     if (targetItem.highest_bid < bid.answer) {
       await this.dbConn.updateItemWithBid(item.answer, bid.answer);
       console.log(`You have the highest bid $${bid.answer} on: ${item.answer}`);

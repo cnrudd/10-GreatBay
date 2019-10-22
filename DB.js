@@ -37,10 +37,10 @@ class DB {
 
   /**
  * Reads one item from the auctions table
- * @param {string} name
+ * @param {string} itemName
  * @return {Promise}
  */
-  async getItemByName(name) {
+  async getItemByName(itemName) {
     return this.conn.query(
         'SELECT item_name, category, starting_bid, highest_bid FROM auctions WHERE ?',
         {
