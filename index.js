@@ -1,6 +1,8 @@
+const inquirer = require('inquirer');
 
-
-const db = require('./queries.js');
+const DB = require('./DB');
+const Product = require('./model/Product');
+const Auction = require('./model/Auction');
 
 /**
  * Main entry point to script
@@ -11,35 +13,51 @@ const db = require('./queries.js');
  */
 
 
+/**
+  * Main entry point to app
+  */
 async function run() {
+  const db = new DB();
+  await db.createConnection();
 
-  const conn = await db.createConnection();
-
-  const step1 = await inquirer.prompt(
-    {
-      name: 'do',
-      message: 'Buy or Sell',
-      list: ['Buy', 'Sell']
-    }
-  );
-
-  if (step1.do == 'Buy') {
-
-    const response = await connection.query('select items from products');
-    const items = response.items
-    const ans2 = await inquirer.prompt(
-      {
-        name: 'item',
-        message: 'What do you want to buy?',
-        list: ItemsArray
-      }
-    );
-
-    
-
-  }
-
+  interact(db, 0);
 }
 
+/**
+ *
+ * @param {Object} db Our DB class with connection and queries
+ * @param {number} count count times interact runs
+ */
+async function interact(db, count) {
+  const choices = count ? ['Buy', 'Sell', 'Quit'] :
+    ['Buy', 'Sell'];
+
+  const step1 = await inquirer.prompt(
+      {
+        name: 'do',
+        message: 'Buy or Sell',
+        type: 'list',
+        choices,
+        default: 'Buy',
+      }
+  );
+
+  switch (step1.do) {
+    case 'Buy':
+      const auction = new Auction(db);
+      await auction.getBidFromUser();
+      break;
+
+    case 'Sell':
+      const item = new Product(db);
+      await item.getSpecsFromUser();
+      break;
+    default:
+      process.exit(0);
+      break;
+  }
+
+  interact(db, ++count);
+}
 
 run();
