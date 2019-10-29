@@ -29,7 +29,7 @@ class DB {
  * Reads all items from the auctions table
  * @return {Promise}
  */
-  async getAllItems() {
+  getAllItems() {
     return this.conn.query(
         'SELECT item_name, category, starting_bid, highest_bid FROM auctions'
     );
@@ -40,7 +40,7 @@ class DB {
  * @param {string} itemName
  * @return {Promise}
  */
-  async getItemByName(itemName) {
+  getItemByName(itemName) {
     return this.conn.query(
         'SELECT item_name, category, starting_bid, highest_bid FROM auctions WHERE ?',
         {
